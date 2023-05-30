@@ -1,0 +1,99 @@
+Persistência dos dados:
+Para fazer a persistência de dados apenas alterei o campo "Id" de todos os registos para "_id" para o mongo considerar esse atributo como identificador.
+
+Setup:
+Para dar setup à base de dados liguei o mongo com: sudo systemctl start mongod
+E importei os dados com o comando : mongoimport -d plantas -c plantas --file plantas.json --jsonArray
+
+Respostas ao exercicio 1.2:
+1. Quantos registos estão na base de dados;
+Q : db.plantas.count()
+R : 29617
+
+
+2. Quantos registos de plantação se encontram na freguesia "São Domingos de Rana"?
+Q : db.plantas.find({Freguesia: "São Domingos de Rana"}).count()
+R : 5903
+
+
+3. Qual a lista de freguesias (ordenada alfabeticamente e sem repetições)?
+Q : db.plantas.distinct("Freguesia").sort()
+R : [
+        '',
+        'Abóboda',
+        'Alcabideche',
+        'São Domingos de Rana',
+        'U.F. Carcavelos e Parede',
+        'U.F. Cascais e Estoril'
+    ]
+
+
+4. Qual a distribuição dos registos por freguesia (quantos registos em cada freguesia)
+Q : db.plantas.aggregate([{
+  $group: {
+    _id: "$Freguesia",
+    quantos: {
+      $sum: 1
+    }
+  }
+}])
+R : [
+        { _id: 'Alcabideche', quantos: 4034 },
+        { _id: 'U.F. Cascais e Estoril', quantos: 12023 },
+        { _id: '', quantos: 26 },
+        { _id: 'U.F. Carcavelos e Parede', quantos: 7629 },
+        { _id: 'São Domingos de Rana', quantos: 5903 },
+        { _id: 'Abóboda', quantos: 2 }
+    ]
+
+
+5. Qual a distribuição dos registos por espécie?
+Q : db.plantas.aggregate([{
+  $group: {
+    _id: "$Espécie",
+    quantos: {
+      $sum: 1
+    }
+  }
+}])
+R : [
+        { _id: 'zambujeiro', quantos: 78 },
+        { _id: 'dombeia', quantos: 3 },
+        { _id: 'Lodão americano', quantos: 1 },
+        { _id: 'freixo', quantos: 411 },
+        { _id: 'eugenia', quantos: 5 },
+        { _id: 'washingtonia filifera', quantos: 102 },
+        { _id: 'acacia', quantos: 104 },
+        { _id: 'dragoeiro', quantos: 48 },
+        { _id: 'jacaranda', quantos: 684 },
+        { _id: 'sobreiro', quantos: 21 },
+        { _id: 'Carpino', quantos: 7 },
+        { _id: 'planta do natal', quantos: 2 },
+        { _id: 'árvore de coral', quantos: 3 },
+        { _id: 'tilia de folhas pequenas', quantos: 115 },
+        { _id: 'abacateiro', quantos: 25 },
+        { _id: 'Buganvilia', quantos: 9 },
+        { _id: 'carvalho hibrido', quantos: 3 },
+        { _id: 'platano bastardo', quantos: 707 },
+        { _id: 'betula', quantos: 4 },
+        { _id: 'carvalho', quantos: 130 }
+        ...
+    ]
+
+
+Para executar as aplicações desenvolvidas primeiro necessita de ter o mongo ligado com uma base de dados "plantas". (para ver como dar setup na base de dados ver "Setup" em cima)
+Com o mongo ligado e a base de dados importada pode correr a API de dados.
+
+EX1:
+Para correr a API de dados desloque-se para a pasta "ex1" e corra os seguintes comandos:
+> npm i
+> npm start
+Agora terá a API de Dados a correr na porta 15030
+
+Ex2:
+Para correr a Interface em outro terminal desloque-se para a pasta "ex2" e corra os seguintes comandos:
+> npm i
+> npm start
+Agora terá a Interface a correr na porta 15031
+
+Para visualizar a Interface abra a browser e utilize o link "http://localhost:15031/"
